@@ -18,8 +18,8 @@ public class MasterDataServiceDelegateImpl implements MasterDataServiceDelegate 
 
 	@Autowired
 	private RestTemplate restTemplate;
-	@Autowired
-	private CircuitBreakerFactory circuitBreakerFactory;
+	/*@Autowired
+	private CircuitBreakerFactory circuitBreakerFactory;*/
 	
 	@Override
 	public List<Map> getAllCategories() {

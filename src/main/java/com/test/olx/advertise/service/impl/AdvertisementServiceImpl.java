@@ -46,10 +46,12 @@ public class AdvertisementServiceImpl implements AdvertisementService{
 	@Override
 	public Advertisement addAdvertisementSer(Advertisement advertisement, String authToken) {
 		boolean isvalidUser = loginServiceDelegate.isLoggedInUser(authToken);
-		User user = loginServiceDelegate.getUserDetails(authToken);
-		advertisement.setUsername(user.getUsername());
+		System.out.println(isvalidUser);
 		if(!isvalidUser)
 			throw new InvalidAuthorizationTokenException(authToken);
+		User user = loginServiceDelegate.getUserDetails(authToken);
+		System.out.println(user);
+		advertisement.setUsername(user.getUserName());
 		AdvertisementEntity AdvertisementEntity = new AdvertisementEntity(advertisement.getTitle(), advertisement.getDescription(), advertisement.getPrice(), advertisement.getCategory(), new Date(), new Date(), "1", advertisement.getUsername());
 		AdvertisementEntity = advertiseRepo.save(AdvertisementEntity);
 		return new Advertisement(AdvertisementEntity.getId(), AdvertisementEntity.getTitle(), AdvertisementEntity.getDescription(), AdvertisementEntity.getPrice(), AdvertisementEntity.getCategory(), AdvertisementEntity.getCreatedDate(), AdvertisementEntity.getModifiedDate(), AdvertisementEntity.getStatus(), AdvertisementEntity.getUsername(), advertisement.getPostedBy());
@@ -60,7 +62,7 @@ public class AdvertisementServiceImpl implements AdvertisementService{
 	public Advertisement updateAdvertisementSer(String id, Advertisement advertisement, String authToken) {
 		boolean isvalidUser = loginServiceDelegate.isLoggedInUser(authToken);
 		User user = loginServiceDelegate.getUserDetails(authToken);
-		advertisement.setUsername(user.getUsername());
+		advertisement.setUsername(user.getUserName());
 		if(!isvalidUser)
 			throw new InvalidAuthorizationTokenException(authToken);
 		AdvertisementEntity existingAdvertisement = advertiseRepo.getById(Long.valueOf(id));
@@ -68,7 +70,7 @@ public class AdvertisementServiceImpl implements AdvertisementService{
 			throw new RuntimeException("Advertisement with given Id doesn't exist to update: "+ id);
 		existingAdvertisement.setId(Integer.valueOf(id));
 		existingAdvertisement.setCategory(advertisement.getCategory());
-		existingAdvertisement.setUsername(user.getUsername());
+		existingAdvertisement.setUsername(user.getUserName());
 		existingAdvertisement.setDescription(advertisement.getDescription());
 		existingAdvertisement.setTitle(advertisement.getTitle());
 		existingAdvertisement.setPrice(advertisement.getPrice());
@@ -84,7 +86,7 @@ public class AdvertisementServiceImpl implements AdvertisementService{
 		User user = loginServiceDelegate.getUserDetails(authToken);
 		if(!isvalidUser)
 			throw new InvalidAuthorizationTokenException(authToken);
-		List<AdvertisementEntity> advertiseEntities = advertiseRepo.findByUsername(user.getUsername());
+		List<AdvertisementEntity> advertiseEntities = advertiseRepo.findByUsername(user.getUserName());
 		List<Advertisement> advertises = new ArrayList<Advertisement>();
 		advertiseEntities.stream().forEach((AdvertisementEntity)-> 
 			advertises.add(new Advertisement(AdvertisementEntity.getId(), AdvertisementEntity.getTitle(), AdvertisementEntity.getDescription(), AdvertisementEntity.getPrice(), AdvertisementEntity.getCategory(), AdvertisementEntity.getCreatedDate(), AdvertisementEntity.getModifiedDate(), AdvertisementEntity.getStatus(), AdvertisementEntity.getUsername(), user.getFirstName() + " " + user.getLastName()))

@@ -24,8 +24,8 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker; //annota
 @Primary
 public class LoginServiceDelegateCircuitBreakerImpl implements LoginServiceDelegate{
 	
-	@Autowired
-	CircuitBreakerFactory circuitBreakerFactory;
+	/*@Autowired
+	CircuitBreakerFactory circuitBreakerFactory;*/
 	
 	@Autowired
 	RestTemplate restTemplate;
@@ -59,8 +59,9 @@ public class LoginServiceDelegateCircuitBreakerImpl implements LoginServiceDeleg
 	@CircuitBreaker(name = "GET_USER_DETAILS", fallbackMethod = "fallbackForGetUserDetails")
 	public User getUserDetails(String authToken) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", "Bearer " + authToken);
+		//headers.set("Authorization", "Bearer " + authToken);
 		headers.set("auth-token", authToken);
+		headers.set("Content-type","application/json");
 		HttpEntity entity = new HttpEntity(headers);
 		ResponseEntity<User> result = this.restTemplate.exchange("http://auth-service/user",  HttpMethod.GET, entity, User.class);
 		return result.getBody();

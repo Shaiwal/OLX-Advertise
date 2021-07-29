@@ -12,7 +12,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class User {
-	private String username;
+	private String userName;
 	private String firstName;
 	private String lastName;
 	private String jwtToken;
