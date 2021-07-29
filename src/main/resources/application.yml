@@ -1,0 +1,30 @@
+server:
+  port: 7000
+
+spring:
+   application:
+      name: advertise-service
+   config:
+      import: configserver:http://localhost:8888
+   zipkin:
+      base-url: http://localhost:9411 
+
+# Run the "health" actuator to check this config working - *CircuitBreaker is always configured on application acting as client
+resilience4j:
+   circuitbreaker:
+      instances:
+         AUTH_TOKEN_VALIDATION:
+            registerHealthIndicator: true
+            automaticTransitionFromOpenToHalfOpenEnabled: true
+            failureRateThreshold: 50
+            minimumNumberOfCalls: 5
+            permittedNumberOfCallsInHalfOpenState: 3
+            waitDurationInOpenState: 5s
+            
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}:${random.uuid}
